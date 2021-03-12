@@ -3,13 +3,10 @@ version: "2"
 services:
   shinyproxy:
     build: ./shinyproxy
+    container_name: shinyproxy_container
     # In case of error shift this shiny-docker folder to /home/basant and try again
     volumes: 
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./shinyproxy-logs/server:/log
-      - ./shinyproxy-logs/container:/container-logs
-      - ./r_scripts1:/opt/r_scripts
-      - ./r_scripts1:/opt/r_scripts1
+      - .:/code
 
     ports:
       - 8080:8080
@@ -19,3 +16,9 @@ services:
 networks:
   tdc-net:
     name: tdc-net
+-----------------------------------------------------------------------
+uper ye paste krne ke baad run below command:-
+docker exec -it shinyproxy_container sh
+
+now you will enter into container. check code directory which we created in Dockerfile
+# ls code # this way you can check if files is in the container or not
