@@ -1,53 +1,5 @@
-# created multistaged built AWS ECS
-FROM svlentink/r-base-alpine:latest as Multistaged
-
-# system libraries of general use
-RUN apt-get update && apt-get install -y \
-    sudo \
-    pandoc \
-    pandoc-citeproc \
-    libcurl4-gnutls-dev \
-    libcairo2-dev \
-    libxt-dev \
-    libssl-dev \
-    libssh2-1-dev \
-    libxml2-dev \
-    libjq-dev \
-    libprotobuf-dev \
-    libudunits2-dev \
-    libgeos-dev\
-    libgdal-dev\
-    libpq-dev \
-    libmagick++-6.q16-dev
-    
-
-# R shiny library installation
-
-
-RUN R -e "install.packages('shinydashboardPlus', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('shinycssloaders', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('shinyjs', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('shinyWidgets', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('dbplyr', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('dplyr', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('tidyr', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('mondate', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('stringr', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('lubridate', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('data.table', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('DT', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('base', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('tictoc', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('formattable', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('janitor', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('highcharter', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('kableExtra', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('bs4Dash', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('fst', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('tibble', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('pool', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('DBI', repos='https://cloud.r-project.org/')"
-RUN R -e "install.packages('RPostgres', repos='https://cloud.r-project.org/')"
+# Multistaged r-base
+FROM raghavsdocker/r-base:1.0
 
 # copy the app to the image
 RUN mkdir /root/dashops
