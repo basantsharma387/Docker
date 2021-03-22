@@ -1,5 +1,5 @@
 # Multistaged r-base
-FROM raghavsdocker/r-base:1.0
+FROM raghavsdocker/r-base:1.1
 
 # copy the app to the image
 RUN mkdir /root/dashops
