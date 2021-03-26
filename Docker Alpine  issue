@@ -1,0 +1,72 @@
+FROM rhub/r-minimal
+
+
+RUN installr -d -t zlib-dev data.table
+RUN installr -d dplyr
+RUN apk add automake libtool m4 autoconf linux-headers
+
+RUN apk add --no-cache --update-cache \
+        --repository http://nl.alpinelinux.org/alpine/v3.11/main \
+        autoconf=2.69-r2 \
+        automake=1.16.1-r0 && \
+    # repeat autoconf and automake (under `-t`)
+    # to (auto)remove them after installation
+    installr -d \
+        -t "bash libsodium libsodium-dev \
+            curl-dev linux-headers \
+            autoconf automake" \
+            shinydashboardPlus
+            
+RUN installr -d shinycssloaders            
+RUN installr -d shinyjs
+RUN installr -d shinyWidgets
+RUN installr -d dbplyr
+RUN installr -d tidyr mondate
+RUN installr -d stringr lubridate DT tictoc
+
+RUN installr -d formattable janitor bs4Dash fst tibble pool DBI
+RUN installr -d \
+        -t "curl-dev libxml2-dev libc6-compat openssl-dev linux-headers freetype-dev fontconfig-dev" \
+            kableExtra
+            
+            
+RUN installr -d \
+        -t "postgresql-dev" \
+            RPostgres            
+RUN installr -d \
+        -t "bash libsodium libsodium-dev \
+            curl-dev linux-headers \
+            autoconf automake libxml2-dev libc6-compat openssl-dev freetype-dev fontconfig-dev libxext-dev gfortran " \
+            backports 
+RUN installr -d \
+        -t "bash libsodium libsodium-dev \
+            curl-dev linux-headers \
+            autoconf automake libxml2-dev libc6-compat openssl-dev freetype-dev fontconfig-dev libxext-dev gfortran " \
+            nlme    
+RUN installr -d \
+        -t "bash libsodium libsodium-dev \
+            curl-dev linux-headers \
+            autoconf automake libxml2-dev libc6-compat openssl-dev freetype-dev fontconfig-dev libxext-dev gfortran " \
+            broom  highcharter              
+
+RUN apk add libxml2 fontconfig libpq libsodium 
+
+RUN apk add --update docker openrc
+RUN rc-update add docker boot
+
+#gdal proj-dev gfortran geos libgfortran
+
+
+# copy the app to the image
+RUN mkdir /root/dashops
+COPY dashops /root/dashops
+
+COPY Rprofile.site /usr/lib/R/etc/ 
+
+EXPOSE 3838
+
+CMD ["R", "-e", "shiny::runApp('/root/dashops')"]
+
+
+
+
