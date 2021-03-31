@@ -49,10 +49,17 @@ RUN installr -d \
             autoconf automake libxml2-dev libc6-compat openssl-dev freetype-dev fontconfig-dev libxext-dev gfortran " \
             broom  highcharter              
 
-RUN apk add libxml2 fontconfig libpq libsodium 
+RUN apk add libxml2 fontconfig libpq libsodium  autoconf automake linux-headers curl cairo tcl tk libmagic libressl-dev libxt libcurl
 
-RUN apk add --update docker openrc
-RUN rc-update add docker boot
+RUN apk update \
+&& apk upgrade \
+&& apk add --no-cache bash \
+&& apk add --no-cache --virtual=build-dependencies unzip \
+&& apk add --no-cache curl \
+&& apk add --no-cache openjdk8-jre
+
+ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
+
 
 #gdal proj-dev gfortran geos libgfortran
 
