@@ -1,0 +1,73 @@
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+<VirtualHost *:80>
+	ServerName devanalytics.dfgateway.com
+	Redirect "/" "https://devanalytics.dfgateway.com"
+</VirtualHost>
+
+<VirtualHost *:443>
+SSLEngine On
+SSLCertificateFile /opt/newssl/wildcard_dfgateway_com.crt
+SSLCertificateKeyFile /opt/newssl/wildcard_dfgateway_com.key
+SSLCertificateChainFile /opt/newssl/Bundle.crt
+SSLProtocol ALL -SSLv2 -SSLv3 -TLSv1
+SSLHonorCIpherOrder On
+ServerName devanalytics.dfgateway.com
+DocumentRoot "/home"
+ErrorLog ${APACHE_LOG_DIR}/df_error.log
+CustomLog ${APACHE_LOG_DIR}df_access.log combined
+Alias /staticfiles /home/pkoushiki/python_project/Riskscore/staticfiles
+<Directory "/home/pkoushik/python_project/Riskscore/staticfiles">
+        Options FollowSymlinks
+        Order allow,deny
+        Allow from all
+        Require all granted
+</Directory>
+
+WSGIDaemonProcess Riskscore python-home=/home/pkoushik/python_project/Riskscore/myenv python-path=/home/pkoushik/python_project/Riskscore
+WSGIProcessGroup Riskscore
+WSGIScriptAlias / /home/pkoushik/python_project/Riskscore/document_Riskscore/wsgi.py
+<Directory /home/pkoushik/python_project/Riskscore>
+        <Files wsgi.py>
+                Require all granted
+        </Files>
+</Directory>
+</VirtualHost>
+
+<VirtualHost *:443>
+
+SSLEngine On
+SSLCertificateFile /opt/newssl/wildcard_dfgateway_com.crt
+SSLCertificateKeyFile /opt/newssl/wildcard_dfgateway_com.key
+SSLCertificateChainFile /opt/newssl/Bundle.crt
+SSLProtocol ALL -SSLv2 -SSLv3 -TLSv1
+SSLHonorCIpherOrder On
+
+#ProxyPreserveHost On
+#ProxyPass / http://0.0.0.0:3838/
+#ProxyPassReverse / http://0.0.0.0:3838/
+ServerName uatanalyt.dfgateway.com
+    # Configure HTTP request headers
+RequestHeader set X-Forwarded-Proto https
+
+
+
+    # The ProxyPreserveHost On directive is
+    # used so that the desired hostname is passed through,
+    # in case we are proxying multiple hostnames to a single machine
+ProxyPreserveHost On
+
+    # Maps remote servers into the local server URL-space using regex
+ ProxyPassMatch          "^/(.+)/websocket"      "ws://localhost:3838/$1/websocket" keepalive=On
+
+    # Maps remote servers into the local server URL-space
+ProxyPass               /      http://localhost:3838/
+
+    # Adjust the URL in HTTP response headers sent from reverse proxied server
+ProxyPassReverse        /      http://localhost:3838/
+
+
+ProxyRequests Off
+
+
+</VirtualHost>
